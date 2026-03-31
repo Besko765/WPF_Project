@@ -12,40 +12,22 @@ using LanguageLearningApp.Data;
 using System.Collections.Generic;
 using LanguageLearningApp.Models;
 
+using System.Windows;
+
 namespace LanguageLearningApp.Views
 {
-	public partial class MainWindow : Window
-	{
-		private List<Set> sets;
+    public partial class MainWindow : Window
+    {
+        public MainWindow()
+        {
+            InitializeComponent();
 
-		public MainWindow()
-		{
-			InitializeComponent();
+            MainContent.Content = new MainMenuView(this);
+        }
 
-			sets = DataService.GetSets();
-			SetsList.ItemsSource = sets;
-		}
-
-		private void AddSet_Click(object sender, RoutedEventArgs e)
-		{
-			var newSet = new Set
-			{
-				Id = sets.Count + 1,
-				Name = NameInput.Text,
-				OgLanguage = OgLangInput.Text,
-				NewLanguage = NewLangInput.Text
-			};
-
-			sets.Add(newSet);
-
-			// odświeżenie listy
-			SetsList.ItemsSource = null;
-			SetsList.ItemsSource = sets;
-
-			// wyczyszczenie formularza
-			NameInput.Text = "";
-			OgLangInput.Text = "";
-			NewLangInput.Text = "";
-		}
-	}
+        public void Navigate(object view)
+        {
+            MainContent.Content = view;
+        }
+    }
 }
