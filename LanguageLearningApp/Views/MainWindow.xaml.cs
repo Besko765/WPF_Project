@@ -8,11 +8,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using LanguageLearningApp.Data;
-using System.Collections.Generic;
-using LanguageLearningApp.Models;
-
-using System.Windows;
 
 namespace LanguageLearningApp.Views
 {

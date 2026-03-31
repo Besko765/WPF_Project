@@ -8,25 +8,32 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- 🔙 PRZYCISK POWROTU -->
         <Button Content="⬅ Powrót"
                 Click="Back_Click"
                 Margin="10"
                 Width="120"/>
 
-        <!-- 🔽 GŁÓWNA ZAWARTOŚĆ -->
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="2*"/>
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
 
-            <!-- 🔹 LISTA -->
-            <StackPanel Grid.Column="0">
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
 
-                <TextBlock Text="Lista zestawów" FontSize="20" Margin="10"/>
+                <TextBlock Grid.Row="0" Text="Lista zestawów" FontSize="20" Margin="10"/>
 
-                <ListBox x:Name="SetsList" Margin="10">
+                <ListBox Grid.Row="1"
+                         x:Name="SetsList"
+                         ItemsSource="{Binding Sets}"
+                         SelectedItem="{Binding SelectedSet, Mode=TwoWay}"
+                         Margin="10"
+                         VerticalAlignment="Stretch"
+                         HorizontalAlignment="Stretch">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
@@ -40,26 +47,28 @@
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
+            </Grid>
 
-            </StackPanel>
-
-            <!-- 🔹 FORMULARZ -->
             <StackPanel Grid.Column="1" Margin="10">
 
-                <TextBlock Text="Dodaj zestaw" FontSize="18" Margin="5"/>
+                <TextBlock Text="Dodaj / Edytuj zestaw" FontSize="18" Margin="5"/>
 
                 <TextBlock Text="Nazwa zestawu"/>
-                <TextBox x:Name="NameInput" Margin="0,0,0,10"/>
+                <TextBox Text="{Binding NameInput, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10"/>
 
                 <TextBlock Text="Język źródłowy"/>
-                <TextBox x:Name="OgLangInput" Margin="0,0,0,10"/>
+                <TextBox Text="{Binding OgLangInput, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10"/>
 
                 <TextBlock Text="Język docelowy"/>
-                <TextBox x:Name="NewLangInput" Margin="0,0,0,10"/>
+                <TextBox Text="{Binding NewLangInput, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10"/>
 
-                <Button Content="Dodaj"
-                        Click="AddSet_Click"
-                        Margin="5"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,6,0,0">
+                    <!-- Dodano Click fallback obok Command -->
+                    <Button Content="Dodaj" Command="{Binding AddCommand}" Click="AddSet_Click" Margin="0,0,8,0"/>
+                    <Button Content="Zaktualizuj" Command="{Binding UpdateCommand}" Margin="0,0,8,0"/>
+                    <Button Content="Usuń" Command="{Binding DeleteCommand}" Margin="0,0,8,0"/>
+                    <Button Content="Wyczyść" Command="{Binding ClearCommand}"/>
+                </StackPanel>
 
             </StackPanel>
 

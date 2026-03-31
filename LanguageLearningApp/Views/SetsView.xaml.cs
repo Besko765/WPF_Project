@@ -1,48 +1,43 @@
-﻿using System.Collections.Generic;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using LanguageLearningApp.Models;
-using LanguageLearningApp.Data;
+using LanguageLearningApp.ViewModels;
 
 namespace LanguageLearningApp.Views
 {
-    public partial class SetsView : UserControl
-    {
-        private MainWindow mainWindow;
-        private List<Set> sets;
+	public partial class SetsView : UserControl
+	{
+		private MainWindow mainWindow;
 
-        public SetsView(MainWindow window)
-        {
-            InitializeComponent();
-            mainWindow = window;
+		public SetsView(MainWindow window)
+		{
+			InitializeComponent();
+			mainWindow = window;
 
-            sets = DataService.GetSets();
-            SetsList.ItemsSource = sets;
-        }
+			DataContext = new SetsViewModel();
 
-        private void Back_Click(object sender, RoutedEventArgs e)
-        {
-            mainWindow.Navigate(new MainMenuView(mainWindow));
-        }
+			if (DataContext is SetsViewModel vm)
+			{
+				SetsList.ItemsSource = vm.Sets;
+			}
+		}
 
-        private void AddSet_Click(object sender, RoutedEventArgs e)
-        {
-            var newSet = new Set
-            {
-                Id = sets.Count + 1,
-                Name = NameInput.Text,
-                OgLanguage = OgLangInput.Text,
-                NewLanguage = NewLangInput.Text
-            };
+		private void Back_Click(object sender, RoutedEventArgs e)
+		{
+			mainWindow.Navigate(new MainMenuView(mainWindow));
+		}
 
-            sets.Add(newSet);
-
-            SetsList.ItemsSource = null;
-            SetsList.ItemsSource = sets;
-
-            NameInput.Text = "";
-            OgLangInput.Text = "";
-            NewLangInput.Text = "";
-        }
-    }
+		// Fallback: wywołaj komendę Add bezpośrednio z code-behind
+		private void AddSet_Click(object sender, RoutedEventArgs e)
+		{
+			if (DataContext is SetsViewModel vm && vm.AddCommand.CanExecute(null))
+			{
+				vm.AddCommand.Execute(null);
+			}
+			else
+			{
+				// pomocnicze logowanie do Output (opcjonalne)
+				System.Diagnostics.Debug.WriteLine("AddCommand nie może wykonać się (CanExecute == false) lub DataContext nie jest SetsViewModel.");
+			}
+		}
+	}
 }
