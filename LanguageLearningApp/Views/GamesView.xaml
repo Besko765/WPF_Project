@@ -55,7 +55,15 @@
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Margin="8">
-                <Button Content="⬅ Powrót" Click="Back_Click" Padding="8,6" Margin="4,0"/>
+                <TextBlock Text="Wybierz grę:" Margin="10" HorizontalAlignment="Center"/>
+                    <WrapPanel HorizontalAlignment="Center" Margin="6">
+                        <Button Content="Wisielec" Click="Hangman_Click" Margin="6" MinWidth="160"/>
+                        <Button Content="Fiszki" Click="Flashcards_Click" Margin="6" MinWidth="160"/>
+                        <Button Content="Quiz (wielokrotny wybór)" Click="Quiz_Click" Margin="6" MinWidth="160"/>
+                        <Button Content="Dopasuj pary" Click="Match_Click" Margin="6" MinWidth="160"/>
+                        <Button Content="Rozsypanka" Click="Shuffle_Click" Margin="6" MinWidth="160"/>
+                    </WrapPanel>
+                <Button Content="⬅ Powrót" Click="Back_Click" Margin="10" Width="120" HorizontalAlignment="Center"/>
             </StackPanel>
         </Grid>
     </ScrollViewer>

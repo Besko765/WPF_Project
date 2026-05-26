@@ -13,12 +13,10 @@ namespace LanguageLearningApp.Views
 			InitializeComponent();
 			mainWindow = window;
 
-			DataContext = new SetsViewModel();
+			var vm = new SetsViewModel();
+			DataContext = vm;
 
-			if (DataContext is SetsViewModel vm)
-			{
-				SetsList.ItemsSource = vm.Sets;
-			}
+			SetsList.ItemsSource = vm.Sets;
 		}
 
 		private void Back_Click(object sender, RoutedEventArgs e)
@@ -26,7 +24,6 @@ namespace LanguageLearningApp.Views
 			mainWindow.Navigate(new MainMenuView(mainWindow));
 		}
 
-		// Fallback: wywołaj komendę Add bezpośrednio z code-behind
 		private void AddSet_Click(object sender, RoutedEventArgs e)
 		{
 			if (DataContext is SetsViewModel vm && vm.AddCommand.CanExecute(null))
@@ -35,8 +32,15 @@ namespace LanguageLearningApp.Views
 			}
 			else
 			{
-				// pomocnicze logowanie do Output (opcjonalne)
 				System.Diagnostics.Debug.WriteLine("AddCommand nie może wykonać się (CanExecute == false) lub DataContext nie jest SetsViewModel.");
+			}
+		}
+
+		private void OpenSet_Click(object sender, RoutedEventArgs e)
+		{
+			if (DataContext is SetsViewModel vm && vm.SelectedSet != null)
+			{
+				mainWindow.Navigate(new SetEditorView(mainWindow, vm.SelectedSet));
 			}
 		}
 	}

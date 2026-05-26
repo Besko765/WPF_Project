@@ -1,0 +1,35 @@
+<UserControl x:Class="LanguageLearningApp.Views.ShuffleView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+            <Button Content="⬅ Powrót" Click="Back_Click"/>
+            <TextBlock Text="Rozsypanka" FontSize="18" Margin="12,0,0,0" VerticalAlignment="Center"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" HorizontalAlignment="Center">
+            <TextBlock Text="Wybierz zestaw:"/>
+            <ComboBox x:Name="SetSelector" DisplayMemberPath="Name" Width="250" Margin="0,8,0,12"/>
+
+            <Button Content="Nowa gra" Click="NewGame_Click" Width="120"/>
+
+            <TextBlock x:Name="ShuffledWord" FontSize="26" FontWeight="Bold" Margin="0,12,0,0" TextAlignment="Center"/>
+            <TextBox x:Name="AnswerBox" Width="300" Margin="0,12,0,0" HorizontalAlignment="Center"/>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,8,0,0">
+                <Button Content="Wyczyść" Click="ClearAnswer_Click" Width="100" Margin="0,0,8,0"/>
+                <Button Content="Sprawdź" Click="Check_Click" Width="120"/>
+            </StackPanel>
+
+            <WrapPanel x:Name="LettersPanel" Margin="0,12,0,0" HorizontalAlignment="Center"/>
+
+            <TextBlock x:Name="ResultMessage" Margin="0,12,0,0" FontWeight="Bold"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

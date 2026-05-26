@@ -5,6 +5,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
@@ -13,7 +14,7 @@
                 Margin="10"
                 Width="120"/>
 
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="1" Margin="0,0,0,6">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="2*"/>
                 <ColumnDefinition Width="1*"/>
@@ -67,11 +68,13 @@
                     <Button Content="Dodaj" Command="{Binding AddCommand}" Click="AddSet_Click" Margin="0,0,8,0"/>
                     <Button Content="Zaktualizuj" Command="{Binding UpdateCommand}" Margin="0,0,8,0"/>
                     <Button Content="Usuń" Command="{Binding DeleteCommand}" Margin="0,0,8,0"/>
-                    <Button Content="Wyczyść" Command="{Binding ClearCommand}"/>
+                    <Button Content="Wyczyść" Command="{Binding ClearCommand}" Margin="0,0,8,0"/>
+                    <Button Content="Otwórz" Click="OpenSet_Click" />
                 </StackPanel>
 
             </StackPanel>
 
+            <!-- Sekcja zarządzania słówkami przeniesiona do osobnego widoku SetEditorView -->
         </Grid>
     </Grid>
 </UserControl>

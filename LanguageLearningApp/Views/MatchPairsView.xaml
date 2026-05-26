@@ -1,0 +1,36 @@
+<UserControl x:Class="LanguageLearningApp.Views.MatchPairsView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+            <Button Content="⬅ Powrót" Click="Back_Click"/>
+            <TextBlock Text="Dopasuj pary" FontSize="18" Margin="12,0,0,0" VerticalAlignment="Center"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" HorizontalAlignment="Center">
+            <TextBlock Text="Wybierz zestaw:"/>
+            <ComboBox x:Name="SetSelector" DisplayMemberPath="Name" Width="250" Margin="0,8,0,12" SelectionChanged="SetSelector_SelectionChanged"/>
+
+            <Border Padding="12" Background="#FFF" CornerRadius="6">
+                <StackPanel Width="520" HorizontalAlignment="Center">
+                    <TextBlock Text="Kliknij lewą literę, potem odpowiadającą prawą." Margin="0,8"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel x:Name="LeftPanel" Grid.Column="0" Margin="8"/>
+                        <StackPanel x:Name="RightPanel" Grid.Column="1" Margin="8"/>
+                    </Grid>
+                    <TextBlock x:Name="ResultMessage" Margin="0,12,0,0" FontWeight="Bold" TextAlignment="Center"/>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </Grid>
+</UserControl>

@@ -8,9 +8,9 @@ using LanguageLearningApp.Models;
 
 namespace LanguageLearningApp.ViewModels
 {
-	public class SetsViewModel : INotifyPropertyChanged
+    public class SetsViewModel : INotifyPropertyChanged
 	{
-		public ObservableCollection<Set> Sets { get; } = new ObservableCollection<Set>();
+		public ObservableCollection<Set> Sets { get; } = LanguageLearningApp.Data.DataService.Sets;
 
 		private Set? selectedSet;
 		public Set? SelectedSet
@@ -25,8 +25,44 @@ namespace LanguageLearningApp.ViewModels
 					NameInput = selectedSet.Name;
 					OgLangInput = selectedSet.OgLanguage;
 					NewLangInput = selectedSet.NewLanguage;
+					SelectedWord = null;
 				}
 			}
+		}
+
+		private Word? selectedWord;
+		public Word? SelectedWord
+		{
+			get => selectedWord;
+			set
+			{
+				selectedWord = value;
+				OnPropertyChanged();
+				if (selectedWord != null)
+				{
+					WordTextInput = selectedWord.Text;
+					WordTranslationInput = selectedWord.Translation;
+				}
+				else
+				{
+					WordTextInput = string.Empty;
+					WordTranslationInput = string.Empty;
+				}
+			}
+		}
+
+		private string wordTextInput = string.Empty;
+		public string WordTextInput
+		{
+			get => wordTextInput;
+			set { wordTextInput = value; OnPropertyChanged(); System.Windows.Input.CommandManager.InvalidateRequerySuggested(); }
+		}
+
+		private string wordTranslationInput = string.Empty;
+		public string WordTranslationInput
+		{
+			get => wordTranslationInput;
+			set { wordTranslationInput = value; OnPropertyChanged(); System.Windows.Input.CommandManager.InvalidateRequerySuggested(); }
 		}
 
 		private string nameInput = string.Empty;
@@ -54,16 +90,26 @@ namespace LanguageLearningApp.ViewModels
 		public ICommand UpdateCommand { get; }
 		public ICommand DeleteCommand { get; }
 		public ICommand ClearCommand { get; }
+		public ICommand AddWordCommand { get; }
+		public ICommand UpdateWordCommand { get; }
+		public ICommand DeleteWordCommand { get; }
 
 		public SetsViewModel()
 		{
-			foreach (var s in DataService.GetSets())
-				Sets.Add(s);
 
 			AddCommand = new RelayCommand(_ => AddSet(), _ => !string.IsNullOrWhiteSpace(NameInput));
 			UpdateCommand = new RelayCommand(_ => UpdateSet(), _ => SelectedSet != null);
 			DeleteCommand = new RelayCommand(_ => DeleteSet(), _ => SelectedSet != null);
 			ClearCommand = new RelayCommand(_ => ClearInputs());
+
+			AddWordCommand = new RelayCommand(_ => AddWord(), _ => SelectedSet != null && !string.IsNullOrWhiteSpace(WordTextInput));
+			UpdateWordCommand = new RelayCommand(_ => UpdateWord(), _ => SelectedSet != null && SelectedWord != null);
+			DeleteWordCommand = new RelayCommand(_ => DeleteWord(), _ => SelectedSet != null && SelectedWord != null);
+
+			if (Sets.Any())
+			{
+				SelectedSet = Sets.First();
+			}
 		}
 
 		private void AddSet()
@@ -103,6 +149,35 @@ namespace LanguageLearningApp.ViewModels
 			if (SelectedSet == null) return;
 			Sets.Remove(SelectedSet);
 			ClearInputs();
+		}
+
+		private void AddWord()
+		{
+			if (SelectedSet == null) return;
+			var words = SelectedSet.Words;
+			var newId = (words.Any() ? words.Max(w => w.Id) : 0) + 1;
+			var w = new Word { Id = newId, SetId = SelectedSet.Id, Text = WordTextInput, Translation = WordTranslationInput };
+			words.Add(w);
+			WordTextInput = string.Empty;
+			WordTranslationInput = string.Empty;
+		}
+
+		private void UpdateWord()
+		{
+			if (SelectedSet == null || SelectedWord == null) return;
+			var words = SelectedSet.Words;
+			var idx = words.IndexOf(SelectedWord);
+			if (idx < 0) return;
+			var updated = new Word { Id = SelectedWord.Id, SetId = SelectedSet.Id, Text = WordTextInput, Translation = WordTranslationInput };
+			words[idx] = updated;
+			SelectedWord = updated;
+		}
+
+		private void DeleteWord()
+		{
+			if (SelectedSet == null || SelectedWord == null) return;
+			SelectedSet.Words.Remove(SelectedWord);
+			SelectedWord = null;
 		}
 
 		private void ClearInputs()

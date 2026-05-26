@@ -1,0 +1,66 @@
+<UserControl x:Class="LanguageLearningApp.Views.HangmanView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:vm="clr-namespace:LanguageLearningApp.ViewModels">
+    <!-- Responsywny widok: nasłuchujemy zmiany rozmiaru i przełączamy orientację WrapPanel -->
+    <UserControl.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+        </Style>
+    </UserControl.Resources>
+
+    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <DockPanel Margin="8">
+                <Button Content="⬅ Powrót" Click="Back_Click" Margin="0,0,8,0"/>
+                <TextBlock Text="Wisielec" FontSize="20" VerticalAlignment="Center"/>
+            </DockPanel>
+
+            <!-- Używamy WrapPanel aby kolumny zawijały się pod siebie przy wąskim oknie zamiast być obcięte -->
+            <WrapPanel x:Name="RootWrap" Grid.Row="1" Margin="12" Orientation="Horizontal" ItemHeight="Auto" IsItemsHost="False">
+
+                <StackPanel Width="Auto" MinWidth="260" HorizontalAlignment="Stretch">
+                    <TextBlock Text="Zestaw:" FontWeight="Bold"/>
+                    <ComboBox x:Name="SetSelector"
+                              DisplayMemberPath="Name"
+                              SelectedValuePath="Id"
+                              Margin="0,6,0,12" HorizontalAlignment="Stretch"/>
+
+                    <TextBlock Text="Słowo (język nauczany):" FontWeight="Bold"/>
+                    <Viewbox StretchDirection="Both" Stretch="Uniform" Height="70" Margin="0,6,0,12" HorizontalAlignment="Stretch">
+                        <TextBlock x:Name="MaskedWord" FontSize="28" TextWrapping="Wrap" TextAlignment="Center"/>
+                    </Viewbox>
+
+                    <TextBlock Text="Zgadnięte litery:"/>
+                    <TextBlock x:Name="GuessedLetters" Margin="0,6,0,12" TextWrapping="Wrap"/>
+
+                    <TextBlock Text="Błędy:"/>
+                    <TextBlock x:Name="ErrorsCount" Margin="0,6,0,12"/>
+
+                    <WrapPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,6,0,0">
+                        <TextBox x:Name="LetterInput" Width="48" MaxLength="1" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                        <Button Content="Zgadnij" Click="Guess_Click" Margin="0,0,6,0" MinWidth="80"/>
+                        <Button Content="Nowa gra" Click="NewGame_Click" Margin="0,0,6,0" MinWidth="100"/>
+                    </WrapPanel>
+
+                    <TextBlock x:Name="Message" Foreground="DarkGreen" Margin="0,10,0,0" TextWrapping="Wrap"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1" Margin="12,0,0,0" HorizontalAlignment="Stretch">
+                    <!-- Canvas będzie się rozciągać; rysunek skalowany proporcjonalnie w code-behind -->
+                    <!-- Utrzymujemy stały system współrzędnych (220x260) i skalujemy proporcjonalnie przy pomocy Viewbox -->
+                    <Viewbox Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="300">
+                        <Canvas x:Name="HangmanCanvas" Width="220" Height="260" Background="Transparent" />
+                    </Viewbox>
+
+                    <!-- Instrukcja usunięta na prośbę użytkownika -->
+                </StackPanel>
+            </WrapPanel>
+        </Grid>
+    </ScrollViewer>
+</UserControl>
