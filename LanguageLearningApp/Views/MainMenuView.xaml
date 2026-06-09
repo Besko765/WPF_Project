@@ -2,14 +2,79 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
+    <UserControl.Resources>
+        <!-- Drop shadow effects for cards -->
+        <DropShadowEffect x:Key="CardShadowDefault" Color="#888" BlurRadius="8" ShadowDepth="2" Opacity="0.6"/>
+        <DropShadowEffect x:Key="CardShadowHover" Color="#888" BlurRadius="14" ShadowDepth="4" Opacity="0.75"/>
+
+        <!-- Reusable card style with hover highlight and slight scale -->
+        <Style x:Key="CardButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#DDD"/>
+            <Setter Property="Padding" Value="12"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <!-- apply default effect via resource on the border -->
+                        <Border x:Name="cardBorder" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="10" RenderTransformOrigin="0.5,0.5" Effect="{StaticResource CardShadowDefault}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="cardBorder" Property="Background" Value="#FFF8FBFF"/>
+                                <Setter TargetName="cardBorder" Property="BorderBrush" Value="#C9E0FF"/>
+                                <Setter TargetName="cardBorder" Property="Effect" Value="{StaticResource CardShadowHover}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="cardBorder" Property="Background" Value="#FFEFF7FF"/>
+                                <Setter TargetName="cardBorder" Property="Effect" Value="{StaticResource CardShadowDefault}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
     <Grid>
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+        <!-- Background gradient -->
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#FFEEF2FF" Offset="0"/>
+                <GradientStop Color="#FFF7FAFF" Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
 
-            <TextBlock Text="MENU GŁÓWNE" FontSize="26" Margin="10" HorizontalAlignment="Center"/>
+        <Border CornerRadius="12" Padding="24" Margin="32" Background="#CCFFFFFF" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <!-- Card container -->
+            <StackPanel Width="640" MaxWidth="640" HorizontalAlignment="Center">
+                <TextBlock Text="Language Learning" FontSize="32" FontWeight="Bold" HorizontalAlignment="Center"/>
+                <TextBlock Text="Ucz się słówek przez gry i ćwiczenia" FontSize="14" Foreground="Gray" HorizontalAlignment="Center" Margin="0,6,0,18"/>
 
-            <Button Content="Zestawy słówek" Click="Sets_Click" Margin="10" Width="200"/>
-            <Button Content="Gry (wkrótce)" Click="Games_Click" Margin="10" Width="200"/>
+                <WrapPanel HorizontalAlignment="Center" ItemHeight="160" ItemWidth="260" Margin="0,8" Orientation="Horizontal" Width="Auto">
+                    <!-- Sets card (folder icon) -->
+                    <Button Style="{StaticResource CardButtonStyle}" Click="Sets_Click" Margin="8" Width="260" Height="160">
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Text="📁" FontSize="36" HorizontalAlignment="Center"/>
+                            <TextBlock Text="Zestawy słówek" FontSize="18" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,8,0,0"/>
+                            <TextBlock Text="Przeglądaj i edytuj zestawy" FontSize="12" Foreground="Gray" HorizontalAlignment="Center" Margin="0,6,0,0" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Button>
 
-        </StackPanel>
+                    <!-- Games card (gamepad icon) -->
+                    <Button Style="{StaticResource CardButtonStyle}" Click="Games_Click" Margin="8" Width="260" Height="160">
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Text="🎮" FontSize="36" HorizontalAlignment="Center"/>
+                            <TextBlock Text="Gry" FontSize="18" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,8,0,0"/>
+                            <TextBlock Text="Wisielec, fiszki, quizy" FontSize="12" Foreground="Gray" HorizontalAlignment="Center" Margin="0,6,0,0" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Button>
+                </WrapPanel>
+
+                <!-- removed demo / json info to declutter UI -->
+            </StackPanel>
+        </Border>
     </Grid>
 </UserControl>
