@@ -1,0 +1,57 @@
+<Window x:Class="LanguageLearningApp.Views.SetEditorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Edytuj zestaw" SizeToContent="WidthAndHeight" MinWidth="520" ResizeMode="CanResize">
+
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,8">
+            <TextBlock Text="Edytuj zestaw" FontSize="18" FontWeight="Bold" VerticalAlignment="Center"/>
+        </StackPanel>
+
+        <Grid Grid.Row="1" Margin="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0">
+                <TextBlock Text="Nazwa zestawu"/>
+                <TextBox x:Name="NameInput" Margin="0,4,0,8"/>
+
+                <TextBlock Text="Język źródłowy"/>
+                <TextBox x:Name="OgLangInput" Margin="0,4,0,8"/>
+
+                <TextBlock Text="Język docelowy"/>
+                <TextBox x:Name="NewLangInput" Margin="0,4,0,8"/>
+
+                <TextBlock Text="Lista słów" FontWeight="Bold"/>
+                <ListBox x:Name="WordsList" DisplayMemberPath="Text" Height="200" Margin="0,8,0,0"/>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Margin="8">
+                <TextBlock Text="Tekst (źródłowy)"/>
+                <TextBox x:Name="WordText" Margin="0,4,0,8"/>
+                <TextBlock Text="Tłumaczenie"/>
+                <TextBox x:Name="WordTranslation" Margin="0,4,0,8"/>
+
+                <StackPanel Orientation="Horizontal">
+                    <Button x:Name="AddWordBtn" Content="Dodaj" Click="Add_Click" Margin="0,0,8,0"/>
+                    <Button x:Name="UpdateWordBtn" Content="Aktualizuj" Click="Update_Click" Margin="0,0,8,0"/>
+                    <Button x:Name="DeleteWordBtn" Content="Usuń" Click="Delete_Click"/>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,8,0,0">
+            <Button x:Name="SaveBtn" Content="Zapisz" Click="Save_Click" Width="100" Margin="0,0,8,0"/>
+            <Button x:Name="CancelBtn" Content="Anuluj" Click="Cancel_Click" Width="100"/>
+            <Button x:Name="CloseBtn" Content="Zamknij" Click="Close_Click" Width="100" Visibility="Collapsed" Margin="8,0,0,0"/>
+        </StackPanel>
+    </Grid>
+</Window>

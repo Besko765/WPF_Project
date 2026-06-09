@@ -23,18 +23,25 @@
             <Grid Grid.Column="0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
                 <TextBlock Grid.Row="0" Text="Lista zestawów" FontSize="20" Margin="10"/>
 
-                <ListBox Grid.Row="1"
+                <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="10,0,10,6">
+                    <TextBox x:Name="NameFilter" Width="200" ToolTip="Filtruj..." TextChanged="NameFilter_TextChanged"/>
+                    <TextBlock Text="(dwuklik otwiera edycję)" VerticalAlignment="Center" Margin="8,0,0,0" Foreground="Gray"/>
+                </StackPanel>
+
+                <ListBox Grid.Row="2"
                          x:Name="SetsList"
                          ItemsSource="{Binding Sets}"
                          SelectedItem="{Binding SelectedSet, Mode=TwoWay}"
                          Margin="10"
                          VerticalAlignment="Stretch"
-                         HorizontalAlignment="Stretch">
+                         HorizontalAlignment="Stretch"
+                         MouseDoubleClick="SetsList_MouseDoubleClick">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
@@ -64,17 +71,18 @@
                 <TextBox Text="{Binding NewLangInput, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10"/>
 
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,6,0,0">
-                    <!-- Dodano Click fallback obok Command -->
-                    <Button Content="Dodaj" Command="{Binding AddCommand}" Click="AddSet_Click" Margin="0,0,8,0"/>
-                    <Button Content="Zaktualizuj" Command="{Binding UpdateCommand}" Margin="0,0,8,0"/>
+                    <!-- Nowy otwiera okno edycji dla nowego zestawu -->
+                    <Button Content="Nowy" Click="AddSet_Click" Margin="0,0,8,0"/>
+                    <!-- Edytuj otwiera okno edycji dla zaznaczonego zestawu -->
+                    <Button Content="Edytuj" Click="EditSet_Click" Margin="0,0,8,0"/>
                     <Button Content="Usuń" Command="{Binding DeleteCommand}" Margin="0,0,8,0"/>
                     <Button Content="Wyczyść" Command="{Binding ClearCommand}" Margin="0,0,8,0"/>
-                    <Button Content="Otwórz" Click="OpenSet_Click" />
+                    <Button Content="Otwórz (edytor)" Click="OpenSet_Click" />
                 </StackPanel>
 
             </StackPanel>
 
-            <!-- Sekcja zarządzania słówkami przeniesiona do osobnego widoku SetEditorView -->
+            <!-- Sekcja zarządzania słówkami przeniesiona do okna SetEditorWindow dla lepszej ergonomii -->
         </Grid>
     </Grid>
 </UserControl>
