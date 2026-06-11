@@ -1,0 +1,1 @@
+Dodaj pliki fontów (.ttf/.otf) do tego katalogu. Ustaw Build Action = Resource dla każdego pliku. Jeśli nie masz licencji na Frutiger, użyj darmowego zamiennika (np. Inter lub Roboto).

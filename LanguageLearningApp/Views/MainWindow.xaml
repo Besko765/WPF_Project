@@ -3,7 +3,23 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Language Learning App" Height="450" Width="800">
 
+    <Window.Background>
+        <ImageBrush ImageSource="pack://siteoforigin:,,,/Assets/images/bp.jpeg" Stretch="UniformToFill" Opacity="0.95" />
+    </Window.Background>
+
     <Grid>
-        <ContentControl x:Name="MainContent"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="8">
+            <Button x:Name="MuteButton" Content="Mute" Click="MuteButton_Click" Width="75" />
+        </StackPanel>
+
+        <Grid HorizontalAlignment="Center" Margin="0,24,0,24">
+        </Grid>
+
+        <ContentControl x:Name="MainContent" Grid.Row="1"/>
     </Grid>
 </Window>
