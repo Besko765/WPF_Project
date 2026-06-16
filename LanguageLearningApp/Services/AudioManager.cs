@@ -16,8 +16,22 @@ namespace LanguageLearningApp.Services
         private MediaPlayer? musicPlayer;
         private readonly Random rnd = new Random();
 
-        public double MusicVolume { get; set; } = 0.15; // cicho domyślnie
+        private double musicVolume = 0.15; // cicho domyślnie
+        public double MusicVolume 
+        { 
+            get => musicVolume; 
+            set 
+            { 
+                musicVolume = value;
+                // zaktualizuj głośność bieżącego odtwarzacza muzyki
+                if (musicPlayer != null)
+                {
+                    musicPlayer.Volume = value;
+                }
+            }
+        }
         public double SfxVolume { get; set; } = 0.8;
+        public bool SfxMuted { get; set; } = false;
 
         public AudioManager(string? audioRootPath = null)
         {
@@ -26,32 +40,55 @@ namespace LanguageLearningApp.Services
 
         public void Load()
         {
-            if (!Directory.Exists(audioRoot)) return;
+            if (!Directory.Exists(audioRoot))
+            {
+                System.Diagnostics.Debug.WriteLine($"AudioManager: Audio folder not found at {audioRoot}");
+                return;
+            }
 
             var allFiles = Directory.GetFiles(audioRoot, "*.*", SearchOption.AllDirectories)
                 .Where(f => f.EndsWith(".wav", StringComparison.OrdinalIgnoreCase) || f.EndsWith(".mp3", StringComparison.OrdinalIgnoreCase) || f.EndsWith(".ogg", StringComparison.OrdinalIgnoreCase))
+                .OrderBy(f => f)
                 .ToArray();
 
-            // prefer files in a 'music' folder for music
-            var musicFiles = allFiles.Where(p => p.Split(Path.DirectorySeparatorChar).Any(seg => seg.Equals("music", StringComparison.OrdinalIgnoreCase))).ToArray();
+            System.Diagnostics.Debug.WriteLine($"AudioManager: Found {allFiles.Length} audio files in {audioRoot}");
+            foreach (var f in allFiles)
+            {
+                System.Diagnostics.Debug.WriteLine($"  - {f}");
+            }
+
+            // prefer files in a 'music' or 'background' folder for music
+            var musicFiles = allFiles.Where(p => p.Split(Path.DirectorySeparatorChar).Any(seg => seg.Equals("music", StringComparison.OrdinalIgnoreCase) || seg.Equals("background", StringComparison.OrdinalIgnoreCase))).ToArray();
             if (musicFiles.Length > 0)
             {
-                musicUri = new Uri(musicFiles[0]);
+                musicUri = new Uri(musicFiles[0], UriKind.Absolute);
+                System.Diagnostics.Debug.WriteLine($"AudioManager: Loaded music from: {musicFiles[0]}");
             }
             else
             {
-                var fallback = allFiles.FirstOrDefault(f => f.IndexOf("music", StringComparison.OrdinalIgnoreCase) >= 0);
-                if (fallback != null) musicUri = new Uri(fallback);
+                var fallback = allFiles.FirstOrDefault(f => f.IndexOf("music", StringComparison.OrdinalIgnoreCase) >= 0 || f.IndexOf("background", StringComparison.OrdinalIgnoreCase) >= 0);
+                if (fallback != null)
+                {
+                    musicUri = new Uri(fallback, UriKind.Absolute);
+                    System.Diagnostics.Debug.WriteLine($"AudioManager: Loaded music fallback from: {fallback}");
+                }
             }
 
-            // sfx: prefer 'game' or 'sfx' folder, otherwise all non-music files
-            var sfxFiles = allFiles.Where(p => p.Split(Path.DirectorySeparatorChar).Any(seg => seg.Equals("game", StringComparison.OrdinalIgnoreCase) || seg.Equals("sfx", StringComparison.OrdinalIgnoreCase))).ToArray();
+            // sfx: prefer 'button', 'buttons', 'keyboard', 'game' or 'sfx' folder, otherwise all non-music files
+            var sfxFiles = allFiles.Where(p => p.Split(Path.DirectorySeparatorChar).Any(seg => 
+                seg.Equals("button", StringComparison.OrdinalIgnoreCase) || 
+                seg.Equals("buttons", StringComparison.OrdinalIgnoreCase) || 
+                seg.Equals("keyboard", StringComparison.OrdinalIgnoreCase) || 
+                seg.Equals("game", StringComparison.OrdinalIgnoreCase) || 
+                seg.Equals("sfx", StringComparison.OrdinalIgnoreCase))).ToArray();
+
             if (sfxFiles.Length == 0)
             {
-                sfxFiles = allFiles.Where(f => musicUri == null || !string.Equals(new Uri(f).LocalPath, musicUri.LocalPath, StringComparison.OrdinalIgnoreCase)).ToArray();
+                sfxFiles = allFiles.Where(f => musicUri == null || !string.Equals(new Uri(f, UriKind.Absolute).LocalPath, musicUri.LocalPath, StringComparison.OrdinalIgnoreCase)).ToArray();
             }
 
-            sfxUris = sfxFiles.Select(f => new Uri(f)).ToList();
+            sfxUris = sfxFiles.Select(f => new Uri(f, UriKind.Absolute)).ToList();
+            System.Diagnostics.Debug.WriteLine($"AudioManager: Loaded {sfxUris.Count} SFX files");
 
             // preload WAV SFX into SoundPlayer to avoid GC/latency issues
             soundPlayers.Clear();
@@ -64,9 +101,13 @@ namespace LanguageLearningApp.Services
                         var sp = new System.Media.SoundPlayer(uri.LocalPath);
                         try { sp.LoadAsync(); } catch { }
                         soundPlayers.Add(sp);
+                        System.Diagnostics.Debug.WriteLine($"AudioManager: Preloaded WAV: {uri.LocalPath}");
                     }
                 }
-                catch { }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"AudioManager: Failed to load SFX {uri.LocalPath}: {ex.Message}");
+                }
             }
 
             System.Diagnostics.Debug.WriteLine($"AudioManager: loaded music={(musicUri!=null)} sfx={sfxUris.Count} wavPlayers={soundPlayers.Count}");
@@ -83,7 +124,7 @@ namespace LanguageLearningApp.Services
 
             musicPlayer = new MediaPlayer();
             musicPlayer.Open(musicUri);
-            musicPlayer.Volume = MusicVolume;
+            musicPlayer.Volume = musicVolume;
             musicPlayer.MediaEnded += (s, e) =>
             {
                 if (musicPlayer != null)
@@ -105,6 +146,7 @@ namespace LanguageLearningApp.Services
 
         public void PlayRandomSfx()
         {
+            if (SfxMuted) return; // ⭐ Jeśli wyciszone, nie odtwarzaj
             if (sfxUris == null || sfxUris.Count == 0) return;
 
             // prefer SoundPlayer (preloaded wav) for low-latency playback

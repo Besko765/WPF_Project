@@ -21,21 +21,27 @@ namespace LanguageLearningApp.Views
 		private static AudioManager audio = new AudioManager();
 
 		public HangmanView(MainWindow window)
-		{
-			InitializeComponent();
-			mainWindow = window;
+			{
+				InitializeComponent();
+				mainWindow = window;
 
-			SetSelector.ItemsSource = DataService.GetSets();
-			SetSelector.SelectedIndex = 0;
+				SetSelector.ItemsSource = DataService.GetSets();
+				SetSelector.SelectedIndex = 0;
 
-			this.SizeChanged += HangmanView_SizeChanged;
-			BuildKeyboard();
-			// ustaw domyślne tło (pierwszy obraz z Resources/Images jeśli istnieje)
-			TryLoadBackgroundImage();
-			// inicjalizuj audio manager
-			audio.Load();
-			audio.PlayMusicLoop();
-		}
+				this.SizeChanged += HangmanView_SizeChanged;
+				BuildKeyboard();
+				// ustaw domyślne tło (pierwszy obraz z Resources/Images jeśli istnieje)
+				TryLoadBackgroundImage();
+				// inicjalizuj audio manager
+				audio.Load();
+				audio.PlayMusicLoop();
+
+				// ⭐ Ustaw domyślny kolor przycisku wyciszenia na zielony (dźwięki włączone)
+				if (MuteSfxButton != null)
+				{
+					MuteSfxButton.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(92, 184, 92)); // Green (#5CB85C)
+				}
+			}
 
 		private void TryLoadBackgroundImage()
 		{
@@ -110,6 +116,37 @@ namespace LanguageLearningApp.Views
 		private void CloseOverlayButton_Click(object sender, RoutedEventArgs e)
 		{
 			ResultOverlay.Visibility = Visibility.Collapsed;
+		}
+
+		private void VolumeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+		{
+			if (audio == null) return;
+			audio.MusicVolume = e.NewValue;
+			System.Diagnostics.Debug.WriteLine($"Volume changed to: {e.NewValue}");
+		}
+
+		private void MuteSfx_Click(object sender, RoutedEventArgs e)
+		{
+			if (audio == null) return;
+			audio.SfxMuted = !audio.SfxMuted;
+
+			// Zmień tekst przycisku
+			if (MuteSfxButton != null)
+			{
+				MuteSfxButton.Content = audio.SfxMuted ? "🔊 Włącz klawiaturę" : "🔇 Wycisz klawiaturę";
+
+				// Zmień kolor przycisku: Red (wyciszone) lub Green (włączone)
+				if (audio.SfxMuted)
+				{
+					MuteSfxButton.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(234, 84, 85)); // Red (#EA5455)
+				}
+				else
+				{
+					MuteSfxButton.Background = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(92, 184, 92)); // Green (#5CB85C)
+				}
+			}
+
+			System.Diagnostics.Debug.WriteLine($"SFX Muted: {audio.SfxMuted}");
 		}
 
 		private void BuildKeyboard()
@@ -196,30 +233,37 @@ namespace LanguageLearningApp.Views
 		}
 
 		private void StartNewGame()
-		{
-			Message.Text = string.Empty;
-			guessed.Clear();
-			errors = 0;
-			ErrorsCount.Text = errors.ToString();
-
-			currentSet = SetSelector.SelectedItem as Set;
-			if (currentSet == null || currentSet.Words.Count == 0)
 			{
-				Message.Text = "Wybrany zestaw nie zawiera słów.";
-				return;
-			}
+				Message.Text = string.Empty;
+				guessed.Clear();
+				errors = 0;
+				ErrorsCount.Text = errors.ToString();
 
-			// losuj slowo z zestawu
-          var rnd = new System.Random();
-			currentWord = currentSet.Words[rnd.Next(currentSet.Words.Count)];
-			displayWord = string.IsNullOrEmpty(currentWord.Translation) ? currentWord.Text : currentWord.Translation;
-			masked = displayWord.Select(c => char.IsLetter(c) ? '_' : c).ToArray();
-			BuildMaskedWordVisuals();
-			// przy każdej nowej grze losuj nowe tło
-			TryLoadBackgroundImage();
-			LetterInput.Focus();
-			UpdateUi();
-		}
+				currentSet = SetSelector.SelectedItem as Set;
+				if (currentSet == null || currentSet.Words.Count == 0)
+				{
+					Message.Text = "Wybrany zestaw nie zawiera słów.";
+					return;
+				}
+
+				// losuj slowo z zestawu
+			  var rnd = new System.Random();
+				currentWord = currentSet.Words[rnd.Next(currentSet.Words.Count)];
+				displayWord = string.IsNullOrEmpty(currentWord.Translation) ? currentWord.Text : currentWord.Translation;
+				masked = displayWord.Select(c => char.IsLetter(c) ? '_' : c).ToArray();
+				BuildMaskedWordVisuals();
+				// przy każdej nowej grze losuj nowe tło
+				TryLoadBackgroundImage();
+				LetterInput.Focus();
+
+				// ⭐ Włącz wszystkie przyciski klawiatury
+				foreach (var child in KeyboardGrid.Children)
+				{
+					if (child is Button b) b.IsEnabled = true;
+				}
+
+				UpdateUi();
+			}
 
 
 		private void UpdateUi()

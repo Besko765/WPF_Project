@@ -12,80 +12,101 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
-        <Grid Background="{StaticResource BackgroundGradientBrush}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <Image x:Name="BgImage" Stretch="UniformToFill" Opacity="1" Grid.RowSpan="2" IsHitTestVisible="False" Focusable="False" />
-            <Rectangle Fill="#B2FFFFFF" Grid.RowSpan="2" IsHitTestVisible="False" Focusable="False" />
+    <Grid Background="{StaticResource BackgroundGradientBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-            <DockPanel Margin="8">
-                <Button Content="⬅ Powrót" Click="Back_Click" Margin="0,0,8,0"/>
-                <TextBlock Text="Wisielec" FontSize="20" VerticalAlignment="Center"/>
-            </DockPanel>
+        <!-- Tło Image i Rectangle -->
+        <Image x:Name="BgImage" Stretch="UniformToFill" StretchDirection="Both" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Opacity="1" Grid.RowSpan="2" IsHitTestVisible="False" Focusable="False" />
+        <Rectangle Fill="#33000000" Grid.RowSpan="2" IsHitTestVisible="False" Focusable="False" />
 
-            <WrapPanel x:Name="RootWrap" Grid.Row="1" Margin="12" Orientation="Horizontal" ItemHeight="Auto" IsItemsHost="False" HorizontalAlignment="Center">
+        <!-- Header z przyciskami i suwaka głośności -->
+        <Grid Grid.Row="0" Margin="8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Lewy przycisk powrotu -->
+            <Button Grid.Column="0" Content="⬅ Powrót" Click="Back_Click"/>
+
+            <!-- Środek: tytuł gry -->
+            <TextBlock Grid.Column="1" Text="Wisielec" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+
+            <!-- Prawy panel: kontrola głośności -->
+            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="8,0,0,0">
+                <TextBlock Text="🔊 Poziom głośności:" FontSize="13" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                <Slider x:Name="VolumeSlider" Minimum="0" Maximum="1" Value="0.15" Width="120" VerticalAlignment="Center" ValueChanged="VolumeSlider_ValueChanged"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- Główna zawartość gry -->
+        <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+            <WrapPanel x:Name="RootWrap" Margin="12" Orientation="Horizontal" ItemHeight="Auto" IsItemsHost="False" HorizontalAlignment="Center">
 
                 <Border Background="{StaticResource CardBackgroundBrush}" CornerRadius="12" Padding="12" Margin="6" MinWidth="260" MaxWidth="420" BorderBrush="#40FFFFFF" BorderThickness="1">
                     <StackPanel Width="Auto" HorizontalAlignment="Stretch">
-                    <TextBlock Style="{StaticResource AppText}" Text="Zestaw:" FontWeight="Bold"/>
-                    <ComboBox x:Name="SetSelector"
-                              DisplayMemberPath="Name"
-                              SelectedValuePath="Id"
-                              Margin="0,6,0,12" HorizontalAlignment="Stretch"
-                              AutomationProperties.Name="Wybór zestawu"/>
+                        <TextBlock Style="{StaticResource AppText}" Text="Zestaw:" FontWeight="Bold"/>
+                        <ComboBox x:Name="SetSelector"
+                                  DisplayMemberPath="Name"
+                                  SelectedValuePath="Id"
+                                  Margin="0,6,0,12" HorizontalAlignment="Stretch"
+                                  AutomationProperties.Name="Wybór zestawu"/>
 
-                    <TextBlock Style="{StaticResource AppText}" Text="Słowo (język nauczany):" FontWeight="Bold"/>
-                    <Viewbox StretchDirection="Both" Stretch="Uniform" Height="70" Margin="0,6,0,12" HorizontalAlignment="Stretch">
-                        <StackPanel x:Name="MaskedPanel" Orientation="Horizontal" HorizontalAlignment="Center" />
-                    </Viewbox>
+                        <TextBlock Style="{StaticResource AppText}" Text="Słowo (język nauczany):" FontWeight="Bold"/>
+                        <Viewbox StretchDirection="Both" Stretch="Uniform" Height="70" Margin="0,6,0,12" HorizontalAlignment="Stretch">
+                            <StackPanel x:Name="MaskedPanel" Orientation="Horizontal" HorizontalAlignment="Center" />
+                        </Viewbox>
 
-                    <TextBlock Style="{StaticResource AppText}" Text="Zgadnięte litery:"/>
-                    <TextBlock x:Name="GuessedLetters" Margin="0,6,0,12" TextWrapping="Wrap"/>
+                        <TextBlock Style="{StaticResource AppText}" Text="Zgadnięte litery:"/>
+                        <TextBlock x:Name="GuessedLetters" Margin="0,6,0,12" TextWrapping="Wrap"/>
 
-                    <TextBlock Style="{StaticResource AppText}" Text="Błędy:"/>
-                    <TextBlock x:Name="ErrorsCount" Margin="0,6,0,12"/>
+                        <TextBlock Style="{StaticResource AppText}" Text="Błędy:"/>
+                        <TextBlock x:Name="ErrorsCount" Margin="0,6,0,12"/>
 
-                    <WrapPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,6,0,0">
-                        <TextBox x:Name="LetterInput" MaxLength="1" Margin="0,0,6,0" VerticalAlignment="Center"
-                                 Style="{StaticResource KidTextBox}" AutomationProperties.Name="Pole na literę" KeyDown="LetterInput_KeyDown"/>
-                        <Button x:Name="GuessButton" Content="Zgadnij" Click="Guess_Click" Margin="0,0,6,0" MinWidth="80" Style="{StaticResource KidButton}" AutomationProperties.Name="Zgadnij literę"/>
-                        <Button x:Name="NewGameButton" Content="Nowa gra" Click="NewGame_Click" Margin="0,0,6,0" MinWidth="100" Style="{StaticResource KidButton}" AutomationProperties.Name="Nowa gra"/>
-                    </WrapPanel>
+                        <WrapPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,6,0,0">
+                            <TextBox x:Name="LetterInput" MaxLength="1" Margin="0,0,6,0" VerticalAlignment="Center"
+                                     Style="{StaticResource KidTextBox}" AutomationProperties.Name="Pole na literę" KeyDown="LetterInput_KeyDown"/>
+                            <Button x:Name="GuessButton" Content="Zgadnij" Click="Guess_Click" Margin="0,0,6,0" MinWidth="80" Style="{StaticResource KidButton}" AutomationProperties.Name="Zgadnij literę"/>
+                            <Button x:Name="NewGameButton" Content="Nowa gra" Click="NewGame_Click" Margin="0,0,6,0" MinWidth="100" Style="{StaticResource KidButton}" AutomationProperties.Name="Nowa gra"/>
+                        </WrapPanel>
 
-                    <TextBlock x:Name="Message" Foreground="DarkGreen" Margin="0,10,0,0" TextWrapping="Wrap"/>
+                        <TextBlock x:Name="Message" Foreground="DarkGreen" Margin="0,10,0,0" TextWrapping="Wrap"/>
 
-                    <UniformGrid x:Name="KeyboardGrid" Columns="9" Margin="0,12,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        <UniformGrid x:Name="KeyboardGrid" Columns="9" Margin="0,12,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" />
+
+                        <!-- Przycisk do wyciszenia klawiatury -->
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,12,0,0">
+                            <Button x:Name="MuteSfxButton" Content="🔇 Wycisz klawiaturę" Click="MuteSfx_Click" Style="{StaticResource KidButton}" Margin="6" MinWidth="120" AutomationProperties.Name="Wycisz dźwięki klawiatury"/>
+                        </StackPanel>
                     </StackPanel>
                 </Border>
 
                 <Border Background="{StaticResource CardBackgroundBrush}" CornerRadius="12" Padding="12" Margin="6" MinWidth="300" BorderBrush="#40FFFFFF" BorderThickness="1">
-                    <StackPanel Grid.Column="1" Margin="12,0,0,0" HorizontalAlignment="Stretch">
-
-                    <Viewbox Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="300">
-                        <Canvas x:Name="HangmanCanvas" Width="220" Height="260" Background="Transparent" />
-                    </Viewbox>
-
+                    <StackPanel HorizontalAlignment="Stretch">
+                        <Viewbox Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="300">
+                            <Canvas x:Name="HangmanCanvas" Width="220" Height="260" Background="Transparent" />
+                        </Viewbox>
                     </StackPanel>
                 </Border>
-                <!-- ResultOverlay przeniesiony poza WrapPanel w kodzie XAML (by nakładać się na cały Grid) -->
             </WrapPanel>
+        </ScrollViewer>
 
-            <!-- Overlay z wynikiem gry, nad całą zawartością -->
-                <Grid x:Name="ResultOverlay" Visibility="Collapsed" Background="#80000000" Grid.RowSpan="2" Panel.ZIndex="50" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                <Border Background="{StaticResource OverlayCardBrush}" CornerRadius="12" Padding="16" Width="420" Height="260" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                        <TextBlock x:Name="ResultTitle" Text="" FontSize="34" FontWeight="Bold" TextAlignment="Center" Margin="6" />
-                        <TextBlock x:Name="ResultSubtitle" Text="" FontSize="16" TextAlignment="Center" Margin="6" />
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="8">
-                            <Button x:Name="PlayAgainButton" Content="Następna gra" Click="PlayAgainButton_Click" Style="{StaticResource KidButton}" Margin="6" />
-                            <Button x:Name="CloseOverlayButton" Content="Zamknij" Click="CloseOverlayButton_Click" Style="{StaticResource KeyboardButton}" Margin="6" />
-                        </StackPanel>
+        <!-- Overlay z wynikiem gry, nad całą zawartością -->
+        <Grid x:Name="ResultOverlay" Visibility="Collapsed" Background="#80000000" Grid.RowSpan="2" Panel.ZIndex="50" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Border Background="{StaticResource OverlayCardBrush}" CornerRadius="12" Padding="16" Width="420" Height="260" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock x:Name="ResultTitle" Text="" FontSize="34" FontWeight="Bold" TextAlignment="Center" Margin="6" />
+                    <TextBlock x:Name="ResultSubtitle" Text="" FontSize="16" TextAlignment="Center" Margin="6" />
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="8">
+                        <Button x:Name="PlayAgainButton" Content="Następna gra" Click="PlayAgainButton_Click" Style="{StaticResource KidButton}" Margin="6" />
+                        <Button x:Name="CloseOverlayButton" Content="Zamknij" Click="CloseOverlayButton_Click" Style="{StaticResource KeyboardButton}" Margin="6" />
                     </StackPanel>
-                </Border>
-            </Grid>
+                </StackPanel>
+            </Border>
         </Grid>
-    </ScrollViewer>
+    </Grid>
 </UserControl>
