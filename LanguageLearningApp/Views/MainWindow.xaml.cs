@@ -24,5 +24,22 @@ namespace LanguageLearningApp.Views
         {
             MainContent.Content = view;
         }
+
+        private void MuteButton_Click(object sender, RoutedEventArgs e)
+        {
+            var app = System.Windows.Application.Current as App;
+            if (app?.MusicService == null) return;
+
+            if (app.MusicService.IsMuted)
+            {
+                app.MusicService.Unmute();
+                MuteButton.Content = "Mute";
+            }
+            else
+            {
+                app.MusicService.Mute();
+                MuteButton.Content = "Unmute";
+            }
+        }
     }
 }

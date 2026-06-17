@@ -27,7 +27,48 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <TextBlock Grid.Row="0" Text="Lista zestawów" FontSize="20" Margin="10"/>
+                <!-- 3D nagłówek: Lista zestawów -->
+                <Grid HorizontalAlignment="Center" Margin="0,24,0,12">
+                    <TextBlock Text="Lista zestawów" FontSize="36" FontWeight="Bold"
+                               Foreground="#07152A" Opacity="0.28"
+                               RenderTransformOrigin="0.5,0.5">
+                        <TextBlock.RenderTransform>
+                            <TranslateTransform X="6" Y="6"/>
+                        </TextBlock.RenderTransform>
+                    </TextBlock>
+
+                    <TextBlock Text="Lista zestawów" FontSize="36" FontWeight="Bold"
+                               Foreground="#0B2340" Opacity="0.18"
+                               RenderTransformOrigin="0.5,0.5">
+                        <TextBlock.RenderTransform>
+                            <TranslateTransform X="3" Y="3"/>
+                        </TextBlock.RenderTransform>
+                    </TextBlock>
+
+                    <TextBlock Text="Lista zestawów" FontSize="36" FontWeight="Bold"
+                               RenderOptions.ClearTypeHint="Enabled" SnapsToDevicePixels="True">
+                        <TextBlock.Foreground>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                <GradientStop Color="#FFFFFF" Offset="0"/>
+                                <GradientStop Color="#EAF4FF" Offset="0.35"/>
+                                <GradientStop Color="#9FBFF8" Offset="1"/>
+                            </LinearGradientBrush>
+                        </TextBlock.Foreground>
+                        <TextBlock.Effect>
+                            <DropShadowEffect Color="#FFFFFF" Direction="270" ShadowDepth="1" BlurRadius="2" Opacity="0.6"/>
+                        </TextBlock.Effect>
+                    </TextBlock>
+
+                    <TextBlock Text="Lista zestawów" FontSize="36" FontWeight="Bold"
+                               Foreground="#07152A" Opacity="0.24">
+                        <TextBlock.RenderTransform>
+                            <TranslateTransform X="1.5" Y="1.5"/>
+                        </TextBlock.RenderTransform>
+                        <TextBlock.Effect>
+                            <BlurEffect Radius="2.5"/>
+                        </TextBlock.Effect>
+                    </TextBlock>
+                </Grid>
 
                 <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="10,0,10,6">
                     <TextBox x:Name="NameFilter" Width="200" ToolTip="Filtruj..." TextChanged="NameFilter_TextChanged"/>

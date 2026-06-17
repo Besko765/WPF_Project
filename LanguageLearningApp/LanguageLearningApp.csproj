@@ -9,10 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- Kopiuj wszystkie pliki audio do folderu Resources w output -->
-    <None Update="Resources\Audio\**\*" CopyToOutputDirectory="PreserveNewest" />
-    <!-- Kopiuj wszystkie obrazy do folderu Resources w output -->
-    <None Update="Resources\Images\**\*" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="Assets\**\*" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Views\Controls\" />
   </ItemGroup>
 
 </Project>
